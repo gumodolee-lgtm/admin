@@ -60,6 +60,55 @@ cp commands/harness-*.md ~/.claude/commands/
 # settings.json에 hooks 추가 (install.sh 참고)
 ```
 
+## VS Code 자동 부트 (폴더 열면 하네스 자동 시작)
+
+### 원리
+VS Code의 `runOn: "folderOpen"` task가 폴더를 열 때마다 `claude-code://` 프로토콜로
+Claude Code 세션을 열면서 하네스 프롬프트를 자동 주입합니다.
+
+### 프로젝트에 자동 부트 적용하기
+
+```bash
+# install.sh 실행 후 (위 설치 완료 상태에서)
+~/.claude-harness/init-project.sh ~/my-project
+```
+
+이 명령은 대상 프로젝트에 다음을 복사합니다:
+- `.vscode/tasks.json` — 폴더 열릴 때 자동 실행 task
+- `progress.md` — 세션 간 진행 상황 추적
+- `CLAUDE.md` — 프로젝트 규칙 템플릿 (이미 있으면 건너뜀)
+
+### VS Code에서 자동 task 허용 (최초 1회)
+
+1. `Ctrl+Shift+P` → `Tasks: Manage Automatic Tasks in Folder`
+2. `Allow Automatic Tasks in Folder` 선택
+3. VS Code 재시작
+
+### 체감 동작
+
+```
+VS Code로 폴더 열기
+  → claude-harness-boot task 자동 실행
+    → Claude Code 새 세션 + 하네스 프롬프트 자동 입력
+      → Enter 한 번 → 하네스 세션 시작!
+```
+
+### OS별 tasks.json 차이
+
+| OS | command 부분 |
+|----|-------------|
+| Windows | `start "" "claude-code://new?prompt=..."` |
+| macOS | `open "claude-code://new?prompt=..."` |
+| Linux | `xdg-open "claude-code://new?prompt=..."` |
+
+현재 기본값은 **Windows**로 설정되어 있습니다.
+
+### Claude Code 기본 모드 설정 (선택)
+
+VS Code 설정(`Ctrl+,`) → Extensions → Claude Code:
+- `initialPermissionMode` → `plan` 으로 변경
+- 새 세션에서 Claude가 먼저 계획을 세우고 승인 요청부터 하게 됩니다
+
 ## 사용 예시
 
 ```
@@ -95,16 +144,23 @@ cp commands/harness-*.md ~/.claude/commands/
 
 ```
 admin/
-├── README.md              # 이 파일
-├── install.sh             # 자동 설치 스크립트
+├── README.md                # 이 파일
+├── install.sh               # 글로벌 설치 스크립트
+├── init-project.sh          # 프로젝트별 자동부트 초기화
+├── .vscode/
+│   └── tasks.json           # 폴더 열릴 때 자동 실행 task
 ├── rules/
-│   └── harness.md         # 핵심 규칙 (자동 적용)
-└── commands/
-    ├── harness-setup.md   # Step 1: 환경 초기화
-    ├── harness-plan.md    # Step 2: 계획 수립
-    ├── harness-work.md    # Step 3: 구현
-    ├── harness-review.md  # Step 4: 검증
-    └── harness-release.md # Step 5: 배포
+│   └── harness.md           # 핵심 규칙 (자동 적용)
+├── commands/
+│   ├── harness-setup.md     # Step 1: 환경 초기화
+│   ├── harness-plan.md      # Step 2: 계획 수립
+│   ├── harness-work.md      # Step 3: 구현
+│   ├── harness-review.md    # Step 4: 검증
+│   └── harness-release.md   # Step 5: 배포
+└── templates/
+    ├── CLAUDE.md             # 프로젝트 규칙 템플릿
+    ├── progress.md           # 진행 상황 추적 템플릿
+    └── harness-prompt.txt    # 자동 부트 프롬프트 원문
 ```
 
 ## 라이선스

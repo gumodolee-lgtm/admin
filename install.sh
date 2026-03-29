@@ -48,6 +48,22 @@ else
     echo "  -> WARNING: settings.json not found. Please create it manually."
 fi
 
+# Install shared harness prompt
+echo "[4/5] Installing shared harness prompt..."
+HARNESS_DIR="$HOME/.claude-harness"
+mkdir -p "$HARNESS_DIR"
+cp "$SCRIPT_DIR/templates/harness-prompt.txt" "$HARNESS_DIR/prompt.txt"
+echo "  -> ~/.claude-harness/prompt.txt"
+
+# Copy project initializer
+echo "[5/5] Installing project initializer..."
+cp "$SCRIPT_DIR/init-project.sh" "$HARNESS_DIR/init-project.sh"
+chmod +x "$HARNESS_DIR/init-project.sh" 2>/dev/null || true
+cp -r "$SCRIPT_DIR/.vscode" "$HARNESS_DIR/.vscode-template"
+cp -r "$SCRIPT_DIR/templates" "$HARNESS_DIR/templates"
+echo "  -> ~/.claude-harness/init-project.sh"
+echo "  -> ~/.claude-harness/templates/"
+
 echo ""
 echo "=== Installation Complete ==="
 echo ""
@@ -57,5 +73,12 @@ echo "  /harness-plan     - Create implementation plan"
 echo "  /harness-work     - Implement approved plan"
 echo "  /harness-review   - Multi-perspective code review"
 echo "  /harness-release  - Commit and release"
+echo ""
+echo "Auto-boot setup:"
+echo "  To add harness auto-boot to any project:"
+echo "    ~/.claude-harness/init-project.sh <project-path>"
+echo ""
+echo "  Then in VS Code:"
+echo "    Ctrl+Shift+P -> 'Tasks: Manage Automatic Tasks' -> 'Allow'"
 echo ""
 echo "Start with: /harness-setup"

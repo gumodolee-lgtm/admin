@@ -1,0 +1,1 @@
+이 폴더에서는 하네스 워크플로우를 적용해서 작업해줘. 루트의 CLAUDE.md와 progress.md를 먼저 읽고, 그 규칙과 진행 상황을 기준으로 /harness-setup 을 실행해줘. 신규 작업은 모두 progress.md에 기록해.
