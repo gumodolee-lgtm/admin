@@ -1,0 +1,6 @@
+.bkit/
+.claude/
+.env
+*.pem
+*.key
+credentials.json
